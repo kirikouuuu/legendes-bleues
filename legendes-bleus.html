@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Les 10 légendes des Bleus</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,sans-serif;background:#f5f6fa;min-height:100vh;}
+#app{padding:2rem 1rem;max-width:680px;margin:0 auto;}
+.header{text-align:center;margin-bottom:2rem;}
+.header-bar{display:flex;height:6px;border-radius:4px;overflow:hidden;margin-bottom:16px;}
+.header-bar .b{flex:1;background:#002395;}
+.header-bar .w{flex:1;background:#fff;border-top:0.5px solid #ddd;border-bottom:0.5px solid #ddd;}
+.header-bar .r{flex:1;background:#e8192c;}
+.flag{font-size:30px;margin-bottom:6px;}
+.header h1{font-size:24px;font-weight:500;color:#111;}
+.header p{font-size:14px;color:#666;margin-top:4px;}
+.source{font-size:11px;color:#aaa;margin-top:3px;}
+.card{background:#fff;border:0.5px solid #e0e0e0;border-radius:16px;padding:1.25rem;margin-bottom:1rem;}
+.back-btn{display:flex;align-items:center;gap:6px;background:none;border:0.5px solid #ddd;border-radius:8px;padding:7px 14px;font-size:13px;color:#555;cursor:pointer;margin-bottom:1.25rem;transition:all 0.15s;}
+.back-btn:hover{background:#f0f0f0;color:#111;}
+.rules-box{background:#f0f4ff;border:0.5px solid #c5d4f5;border-radius:12px;padding:14px 16px;margin-bottom:1.25rem;font-size:13px;color:#444;line-height:1.75;}
+.rules-box strong{color:#002395;font-weight:500;}
+.level-btn{width:100%;margin-bottom:12px;padding:18px;border:0.5px solid #e0e0e0;border-radius:14px;background:#fff;cursor:pointer;text-align:left;transition:all 0.18s;display:flex;align-items:center;gap:16px;}
+.level-btn:hover{border-color:#002395;background:#f0f4ff;}
+.level-btn .lvl-icon{font-size:28px;flex-shrink:0;}
+.level-btn .lvl-title{font-size:16px;font-weight:500;color:#111;}
+.level-btn .lvl-desc{font-size:13px;color:#777;margin-top:3px;}
+.level-btn .lvl-arrow{margin-left:auto;color:#aaa;font-size:18px;}
+.pool-label{font-size:11px;color:#888;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.8px;}
+.players-pool{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:1.25rem;}
+.player-chip{padding:5px 13px;border-radius:20px;font-size:13px;border:0.5px solid #c5d4f5;background:#f0f4ff;color:#002395;}
+.input-row{display:flex;gap:8px;margin-bottom:10px;}
+.input-row input{flex:1;padding:11px 14px;font-size:15px;border:0.5px solid #ddd;border-radius:10px;background:#fff;color:#111;outline:none;}
+.input-row input:focus{border-color:#002395;}
+.input-row button{padding:11px 20px;border:none;border-radius:10px;background:#e8192c;color:#fff;cursor:pointer;font-size:14px;font-weight:500;transition:background 0.15s;}
+.input-row button:hover{background:#c0001f;}
+.msg{font-size:13px;padding:9px 13px;min-height:38px;border-radius:9px;margin-bottom:10px;display:flex;align-items:center;}
+.msg.ok{background:#eafaf3;color:#0a6640;border:0.5px solid #9de0c0;}
+.msg.err{background:#fff0f1;color:#c0001f;border:0.5px solid #f5a0a8;}
+.msg.already{background:#f3f0ff;color:#4a3ab5;border:0.5px solid #c0b8f0;}
+.msg.empty{background:transparent;border:none;}
+.progress-wrap{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;}
+.progress-bar-bg{flex:1;background:#eee;border-radius:8px;height:7px;}
+.progress-bar{background:linear-gradient(90deg,#002395,#e8192c);height:7px;border-radius:8px;transition:width 0.4s;}
+.progress-label{font-size:13px;color:#888;white-space:nowrap;}
+.tries-count{font-size:13px;color:#aaa;text-align:right;margin-bottom:6px;}
+.ranking{list-style:none;}
+.ranking li{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:0.5px solid #f0f0f0;min-height:58px;}
+.ranking li:last-child{border-bottom:none;}
+.rank-num{font-size:18px;font-weight:500;min-width:28px;text-align:center;color:#bbb;}
+.rank-num.found{color:#002395;}
+.rank-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.rank-dot.found{background:#f0f4ff;border:0.5px solid #c5d4f5;}
+.rank-dot.empty-dot{background:#f5f5f5;border:0.5px dashed #ddd;}
+.rank-slot{flex:1;}
+.rank-name{font-size:15px;font-weight:500;color:#111;}
+.rank-sub{font-size:12px;color:#888;margin-top:3px;}
+.rank-empty-text{font-size:13px;color:#ccc;font-style:italic;}
+.win-box{text-align:center;padding:2rem 1rem;}
+.win-trophy{font-size:52px;margin-bottom:12px;}
+.win-box h2{font-size:22px;font-weight:500;color:#111;margin-bottom:8px;}
+.win-box p{color:#666;font-size:14px;margin-bottom:1.5rem;}
+.restart-btn{padding:12px 28px;border:none;border-radius:10px;background:#002395;color:#fff;cursor:pointer;font-size:15px;font-weight:500;}
+.restart-btn:hover{background:#001a7a;}
+#screen-welcome,#screen-game,#screen-win{display:none;}
+#screen-welcome.active,#screen-game.active,#screen-win.active{display:block;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="header-bar"><div class="b"></div><div class="w"></div><div class="r"></div></div>
+    <div class="flag">🇫🇷</div>
+    <h1>Les 10 légendes des Bleus</h1>
+    <p>Retrouve les plus grands joueurs de l'histoire de l'équipe de France</p>
+    <div class="source">Sources : FourFourTwo · 90min.fr · lequotidiendusport.fr</div>
+  </div>
+
+  <div id="screen-welcome" class="active">
+    <div class="card">
+      <div class="rules-box">
+        <strong>Comment jouer ?</strong><br>
+        — <strong>Facile :</strong> les 10 noms sont affichés, tape-les pour les placer dans le classement avec leur palmarès.<br>
+        — <strong>Difficile :</strong> aucun indice, retrouve les 10 légendes de mémoire.<br>
+        Majuscules et accents ignorés lors de la saisie.
+      </div>
+      <button class="level-btn" onclick="startGame('easy')">
+        <div class="lvl-icon">🟢</div>
+        <div><div class="lvl-title">Facile</div><div class="lvl-desc">Les 10 noms sont affichés — place-les dans le classement</div></div>
+        <span class="lvl-arrow">›</span>
+      </button>
+      <button class="level-btn" onclick="startGame('hard')">
+        <div class="lvl-icon">🔴</div>
+        <div><div class="lvl-title">Difficile</div><div class="lvl-desc">Aucun indice — retrouve les 10 légendes de mémoire</div></div>
+        <span class="lvl-arrow">›</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="screen-game">
+    <button class="back-btn" onclick="goWelcome()">← Changer de niveau</button>
+    <div class="card">
+      <div id="pool-section"></div>
+      <div class="input-row">
+        <input type="text" id="player-input" placeholder="Tape un nom de joueur..." autocomplete="off"/>
+        <button onclick="submitGuess()">Valider</button>
+      </div>
+      <div id="msg" class="msg empty"></div>
+      <div class="tries-count" id="tries-label"></div>
+      <div class="progress-wrap">
+        <div class="progress-bar-bg"><div class="progress-bar" id="prog" style="width:0%"></div></div>
+        <div class="progress-label" id="prog-label">0 / 10</div>
+      </div>
+      <ul class="ranking" id="ranking-list"></ul>
+    </div>
+  </div>
+
+  <div id="screen-win">
+    <button class="back-btn" onclick="goWelcome()">← Changer de niveau</button>
+    <div class="card">
+      <div class="win-box">
+        <div class="win-trophy">🏆</div>
+        <h2>Félicitations !</h2>
+        <p id="win-msg"></p>
+        <button class="restart-btn" onclick="goWelcome()">Rejouer</button>
+      </div>
+      <ul class="ranking" id="ranking-final"></ul>
+    </div>
+  </div>
+</div>
+
+<script>
+const PLAYERS=[
+  {rank:1,name:"Zinedine Zidane",icon:"👑",aliases:["zidane","zizou","zinedine zidane","zinedine","zinedine zidane"],poste:"Milieu offensif",palmares:"CDM 1998 · Euro 2000 · 3× LDC",popularite:"⭐⭐⭐⭐⭐"},
+  {rank:2,name:"Michel Platini",icon:"🎩",aliases:["platini","michel platini","platoche"],poste:"Milieu offensif",palmares:"Euro 1984 · 3 Ballons d'Or",popularite:"⭐⭐⭐⭐⭐"},
+  {rank:3,name:"Thierry Henry",icon:"⚡",aliases:["henry","thierry henry","titi","titi henry"],poste:"Attaquant",palmares:"CDM 1998 · Euro 2000 · 2× PL",popularite:"⭐⭐⭐⭐⭐"},
+  {rank:4,name:"Kylian Mbappé",icon:"🚀",aliases:["mbappe","mbappé","kylian mbappe","kylian mbappé","kylian"],poste:"Attaquant",palmares:"CDM 2018 · LDC 2024",popularite:"⭐⭐⭐⭐⭐"},
+  {rank:5,name:"Didier Deschamps",icon:"🛡️",aliases:["deschamps","didier deschamps","dd"],poste:"Milieu défensif",palmares:"CDM 1998 · Euro 2000 (capitaine)",popularite:"⭐⭐⭐⭐"},
+  {rank:6,name:"Eric Cantona",icon:"😤",aliases:["cantona","eric cantona","king eric","eric","eric cantona"],poste:"Attaquant",palmares:"4× Premier League (Man United)",popularite:"⭐⭐⭐⭐"},
+  {rank:7,name:"N'Golo Kanté",icon:"💪",aliases:["kante","kante","ngolo kante","n golo kante","ngolo","kante ngolo","ngolo kante"],poste:"Milieu défensif",palmares:"CDM 2018 · 2× PL · LDC",popularite:"⭐⭐⭐⭐"},
+  {rank:8,name:"Claude Makélélé",icon:"🔒",aliases:["makelele","claude makelele","makelelé","claude makelelé"],poste:"Milieu défensif",palmares:"Liga + LDC (Real) · PL (Chelsea)",popularite:"⭐⭐⭐⭐"},
+  {rank:9,name:"Raymond Kopa",icon:"🌟",aliases:["kopa","raymond kopa"],poste:"Milieu offensif",palmares:"3× C1 Real Madrid · Ballon d'Or 1958",popularite:"⭐⭐⭐⭐"},
+  {rank:10,name:"Olivier Giroud",icon:"🎯",aliases:["giroud","olivier giroud"],poste:"Attaquant",palmares:"CDM 2018 · Record buts Bleus (57)",popularite:"⭐⭐⭐⭐"}
+];
+
+function normalize(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[''']/g,"").trim();}
+
+let mode='easy',found=[],tries=0;
+
+function goWelcome(){found=[];tries=0;setMsg('','empty');show('screen-welcome');}
+function show(id){['screen-welcome','screen-game','screen-win'].forEach(s=>document.getElementById(s).classList.remove('active'));document.getElementById(id).classList.add('active');}
+function setMsg(t,c){const el=document.getElementById('msg');el.textContent=t;el.className='msg '+(c||'empty');}
+
+function startGame(m){mode=m;found=[];tries=0;setMsg('','empty');renderGame();show('screen-game');document.getElementById('player-input').focus();}
+
+function renderGame(){
+  const poolSec=document.getElementById('pool-section');
+  if(mode==='easy'){
+    const notFound=[...PLAYERS].sort(()=>Math.random()-0.5).filter(p=>!found.includes(p.rank));
+    poolSec.innerHTML=notFound.length?`<div class="pool-label">Joueurs à placer</div><div class="players-pool">${notFound.map(p=>`<span class="player-chip">${p.name}</span>`).join('')}</div>`:'';
+  } else {poolSec.innerHTML='';}
+
+  document.getElementById('ranking-list').innerHTML=PLAYERS.map(p=>{
+    const done=found.includes(p.rank);
+    return `<li>
+      <span class="rank-num ${done?'found':''}">${p.rank}</span>
+      <div class="rank-dot ${done?'found':'empty-dot'}">${done?p.icon:'?'}</div>
+      <div class="rank-slot">${done
+        ?`<div class="rank-name">${p.name}</div><div class="rank-sub">${p.poste} · ${p.palmares} · ${p.popularite}</div>`
+        :`<div class="rank-empty-text">À découvrir...</div>`
+      }</div></li>`;
+  }).join('');
+
+  document.getElementById('tries-label').textContent=mode==='hard'?`Tentatives : ${tries}`:'';
+  document.getElementById('prog').style.width=(found.length/10*100)+'%';
+  document.getElementById('prog-label').textContent=`${found.length} / 10`;
+}
+
+function submitGuess(){
+  const input=document.getElementById('player-input');
+  const val=normalize(input.value);
+  if(!val)return;
+  tries++;
+  let matched=null;
+  for(const p of PLAYERS){if(p.aliases.some(a=>normalize(a)===val)){matched=p;break;}}
+  if(!matched){
+    setMsg(`"${input.value}" n'est pas dans le top 10 — essaie encore.`,'err');
+  } else if(found.includes(matched.rank)){
+    setMsg(`${matched.name} est déjà placé !`,'already');
+  } else {
+    found.push(matched.rank);
+    setMsg(`✓ ${matched.name} — n°${matched.rank} !`,'ok');
+    if(found.length===10){input.value='';setTimeout(showWin,500);return;}
+  }
+  input.value='';renderGame();input.focus();
+}
+
+function showWin(){
+  document.getElementById('win-msg').textContent=mode==='hard'
+    ?`Tu as trouvé les 10 légendes en ${tries} tentative${tries>1?'s':''} !`
+    :`Tu as replacé les 10 légendes dans le classement !`;
+  document.getElementById('ranking-final').innerHTML=PLAYERS.map(p=>`<li>
+    <span class="rank-num found">${p.rank}</span>
+    <div class="rank-dot found">${p.icon}</div>
+    <div class="rank-slot"><div class="rank-name">${p.name}</div><div class="rank-sub">${p.poste} · ${p.palmares} · ${p.popularite}</div></div>
+  </li>`).join('');
+  show('screen-win');
+}
+
+document.getElementById('player-input').addEventListener('keydown',e=>{if(e.key==='Enter')submitGuess();});
+goWelcome();
+</script>
+</body>
+</html>
